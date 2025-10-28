@@ -54,15 +54,16 @@ This script is designed for a Debian-based Linux environment (like Kali Linux, U
 1.  **Install Dependencies:**
     Open your terminal and install `ffmpeg` and `zip`:
     ```bash
-    sudo apt update
-    sudo apt install ffmpeg zip
+    sudo apt update && sudo apt install ffmpeg && sudo apt install zip
     ```
 
 2.  **Get the Script:**
     Clone this repository:
     ```bash
-    git clone https://github.com/its-me-arjun-0007/Boot-Animation-Generator
-    cd Boot-Animation-Generator
+    git clone https://github.com/its-me-arjun-0007/Boot-Animation-Generator-test
+    ```
+    ```
+    cd Boot-Animation-Generator-test
     ```
 
 3.  **Make the Script Executable:**
