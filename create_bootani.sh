@@ -1,40 +1,196 @@
 #!/bin/bash
 
-# --- 1. Clear the terminal screen ---
+# --- 0. Clear the terminal screen ---
 clear
 
-# --- Summary ---
+# --- 1. Color Definitions ---
+# Using the ANSI escape codes you provided for seamless integration:
+BLUE='\e[1;34m'
+YELLOW='\e[1;33m'
+GREEN='\e[0;32m'
+LIGHTGREEN='\e[1;32m'
+RED='\e[1;31m'
+CYAN='\e[0;36m'
+LIGHTCYAN='\e[96m'
+WHITE='\e[1;37m'
+NC='\e[0m' # No Color (Reset)
+
+# --- 2. Summary ---
 echo
-echo "Boot-Animationn Generator . version 3.0"
-echo "Boot-Animation Generator a simple and powerful Bash script for Kali Linux to convert any video or GIF into a perfectly formatted, Android-compatible bootanimation.zip file."
+echo -e "${CYAN}Boot-Animation Generator . version 3.1${NC}"
+echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android bootanimation.zip.${NC}"
 echo
-echo                  "CREATED BY ARJUN"
-echo                "GITHUB  : https://github.com/its-me-arjun-0007"
-echo              "INSTAGRAM : https://www.instagram.com/its_me_arjun_2255"
+echo -e "                  ${WHITE}CREATED BY ARJUN${NC}"
+echo -e "                ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}"
+echo -e "              ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}"
 echo
-echo "LEGAL DISCLAIMER"
-echo "USE AT YOUR OWN RISK. This tool is intended for educational and personal use only."
-echo "Modifying your Android device's system files (such as /system/media/bootanimation.zip) carries inherent risks, including the possibility of a bootloop or system instability if done incorrectly. The creator of this tool is not responsible for any damage, data loss, or bricked devices that may result from its use."
-echo "Always back up your data and your original bootanimation.zip file before applying any modifications."
+echo -e "${YELLOW}LEGAL DISCLAIMER${NC}"
+echo -e "${WHITE}USE AT YOUR OWN RISK. This tool is for educational and personal use only.${NC}"
+echo -e "${WHITE}Modifying system files can be risky. The creator is not responsible for any damage.${NC}"
+echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}"
 
 
-# --- Function to select FPS ---
+# --- 3. Function to select FPS ---
 select_fps() {
-    echo "Please select a frame rate (FPS):"
+    echo -e "\n${BLUE}Please select a frame rate (FPS):${NC}"
     options=("15" "25" "30")
+    # Set the prompt for the 'select' menu
+    PS3=$'\n'"${YELLOW}Choice: ${NC}"
+    
     select opt in "${options[@]}"; do
         if [[ " ${options[@]} " =~ " ${opt} " ]]; then
             FPS=$opt
-            echo "✅ FPS set to $FPS."
+            echo -e "✅ ${GREEN}FPS set to $FPS.${NC}"
             break
         else
-            echo "Invalid option $REPLY. Please select 1, 2, or 3."
+            echo -e "❌ ${RED}Invalid option $REPLY. Please select 1, 2, or 3.${NC}"
         fi
     done
 }
 
-# --- Function to get Resolution (Aspect Ratio) ---
+# --- 4. Function to get Resolution (Aspect Ratio) ---
 get_resolution() {
+    echo -e "\n${BLUE}Please enter the target resolution (this defines the aspect ratio).${NC}"
+    while true; do
+        read -p $'\n'"${YELLOW}Enter target WIDTH (e.g., 1080): ${NC}" WIDTH
+        if [[ ! "$WIDTH" =~ ^[1-9][0-9]*$ ]]; then
+            echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 1080).${NC}"
+            continue
+        fi
+        
+        read -p "${YELLOW}Enter target HEIGHT (e.g., 2400): ${NC}" HEIGHT
+        if [[ ! "$HEIGHT" =~ ^[1-9][0-9]*$ ]]; then
+            echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 2400).${NC}"
+            continue
+        fi
+        
+        echo -e "✅ ${GREEN}Resolution set to ${WIDTH}x${HEIGHT}.${NC}"
+        break
+    done
+}
+
+# --- 5. Function to get the input file ---
+get_input_file() {
+    echo -e "\n${BLUE}Please provide the source video or GIF.${NC}"
+    while true; do
+        read -p $'\n'"${YELLOW}Enter the path to your file: ${NC}" INPUT_FILE
+        
+        if [ ! -f "$INPUT_FILE" ]; then
+            echo -e "❌ ${RED}Error: File not found at '$INPUT_FILE'. Please try again.${NC}"
+        else
+            echo -e "✅ ${GREEN}Using file: $INPUT_FILE${NC}"
+            break
+        fi
+    done
+}
+
+
+# --- 6. CONFIGURATION (Interactive) ---
+select_fps
+get_resolution
+get_input_file
+
+# These durations are still hardcoded.
+INTRO_DURATION=1.5  # 1.5 seconds
+LOOP_DURATION=4.5   # 4.5 seconds
+# ---
+
+# 7. Define Project Variables & Structure
+PROJECT_DIR="custom_boot_animation"
+PART0_DIR="$PROJECT_DIR/part0"
+PART1_DIR="$PROJECT_DIR/part1"
+DESC_FILE="$PROJECT_DIR/desc.txt"
+
+echo -e "\n${CYAN}Setting up project directory: $PROJECT_DIR${NC}"
+rm -rf "$PROJECT_DIR"
+mkdir -p "$PART0_DIR"
+mkdir -p "$PART1_DIR"
+
+# 8. Define the FFmpeg Filter
+FILTER_GRAPH="fps=$FPS,scale=$WIDTH:$HEIGHT:force_original_aspect_ratio=decrease,pad=$WIDTH:$HEIGHT:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1"
+
+# 9. Generate Frames
+echo -e "${CYAN}Processing Intro (part0)...${NC}"
+ffmpeg -loglevel error -i "$INPUT_FILE" \
+       -ss 0 \
+       -t $INTRO_DURATION \
+       -vf "$FILTER_GRAPH" \
+       -vsync vfr \
+       "$PART0_DIR/frame_%04d.png"
+
+echo -e "${CYAN}Processing Loop (part1)...${NC}"
+ffmpeg -loglevel error -i "$INPUT_FILE" \
+       -ss $INTRO_DURATION \
+       -t $LOOP_DURATION \
+       -vf "$FILTER_GRAPH" \
+       -vsync vfr \
+       "$PART1_DIR/frame_%04d.png"
+
+# 10. Create desc.txt
+echo -e "${CYAN}Generating desc.txt...${NC}"
+echo "$WIDTH $HEIGHT $FPS" > "$DESC_FILE"
+echo "p 1 0 part0" >> "$DESC_FILE"
+echo "p 0 0 part1" >> "$DESC_FILE"
+
+echo -e "${BLUE}------------------------------------------------${NC}"
+echo -e "✅ ${LIGHTGREEN}Success! Project created at '$PROJECT_DIR'${NC}"
+echo -e "${WHITE}Resolution: $WIDTH x $HEIGHT @ $FPS fps${NC}"
+echo -e "${WHITE}Intro frames: $(ls -1q "$PART0_DIR" | wc -l)${NC}"
+echo -e "${WHITE}Loop frames:  $(ls -1q "$PART1_DIR" | wc -l)${NC}"
+echo -e "${BLUE}------------------------------------------------${NC}"
+
+
+# --- 11. (NEW FEATURE) Create ZIP file ---
+echo
+echo -e "${BLUE}Would you like to create the final bootanimation.zip file? (y/n)${NC}"
+read -p "${YELLOW}Choice: ${NC}" zip_choice
+
+if [[ "$zip_choice" == "y" || "$zip_choice" == "Y" ]]; then
+  echo -e "${CYAN}Creating bootanimation.zip...${NC}"
+  
+  # Check if zip is installed
+  if ! command -v zip &> /dev/null; then
+      echo -e "❌ ${RED}Error: 'zip' is not found. Please install it (e.g., sudo apt install zip).${NC}"
+  else
+      # Go into the directory to create the zip with the correct paths
+      cd "$PROJECT_DIR"
+      
+      # Use -0 (store only, NO compression) and -r (recursive)
+      # -q (quiet) to suppress zip's own output
+      # We create the zip in the parent directory (../)
+      zip -0qr ../bootanimation.zip part0 part1 desc.txt
+      
+      # Go back to the original directory
+      cd ..
+      
+      if [ -f "bootanimation.zip" ]; then
+          echo -e "✅ ${LIGHTGREEN}Successfully created 'bootanimation.zip' in the current directory!${NC}"
+      else
+          echo -e "❌ ${RED}Error: Failed to create zip file.${NC}"
+      fi
+  fi
+fi
+
+
+# --- 12. Integrated Full-Screen Preview ---
+echo
+echo -e "${BLUE}Would you like to preview the animation? (y/n)${NC}"
+read -p "${YELLOW}Choice: ${NC}" preview_choice
+
+if [[ "$preview_choice" == "y" || "$preview_choice" == "Y" ]]; then
+  echo -e "${CYAN}Generating preview... Press 'q' or 'ESC' to quit full-screen.${NC}"
+  
+  if ! command -v ffplay &> /dev/null; then
+      echo -e "❌ ${RED}Error: ffplay is not found. Please install ffmpeg to use the preview.${NC}"
+      exit 1
+  fi
+  
+  ffplay -autoexit -fs -framerate $FPS -i "$PART0_DIR/frame_%04d.png" && \
+  ffplay -fs -framerate $FPS -loop 0 -i "$PART1_DIR/frame_%04d.png"
+
+  echo -e "${CYAN}Preview finished.${NC}"
+fi
+# --- End of Script ---get_resolution() {
     echo
     echo "Please enter the target resolution (this defines the aspect ratio)."
     while true; do
