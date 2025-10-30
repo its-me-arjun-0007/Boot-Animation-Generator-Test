@@ -74,16 +74,8 @@ This script is designed for a Debian-based Linux environment (like Kali Linux, U
 Run the script from your terminal, providing the path to your input video or GIF file as the only argument.
 
 ```bash
-./create_bootani.sh <path-to-input-file>
+./create_bootani.sh
 ````
-
-**Example:**
-
-```bash
-./create_bootani.sh ~/Videos/my-cool-animation.mp4
-```
-
-The script will create a directory named `custom_boot_animation` and the final `bootanimation.zip` file in your current directory.
 
 ## Sample Output
 
