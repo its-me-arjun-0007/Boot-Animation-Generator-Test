@@ -29,7 +29,7 @@ echo    '|                                                                      
 echo -e "|                   ${WHITE}CREATED BY IT'S ME ARJUN${NC}                      |"
 echo -e "|  ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}                  |"
 echo -e "|  ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}    |"
-echo -e '|                                                                                |'
+echo    '|                                                                                |'
 echo    '--------------------------------------------------------------------------------'
 echo
 echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android bootanimation.zip.${NC}"
