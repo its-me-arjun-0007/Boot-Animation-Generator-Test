@@ -8,7 +8,9 @@ A simple and powerful Bash script for Kali Linux to convert any video or GIF int
 
 ## Overview
 
-This tool automates the tedious process of creating a custom Android boot animation. Manually, this requires extracting hundreds of frames, resizing and padding them to your screen's resolution, splitting them into an "intro" and "loop" sequence, writing a `desc.txt` file, and creating a special *uncompressed* zip archive.
+This Bash script is a command-line interface (CLI) tool designed to automate the entire process of converting a standard video or GIF file into a fully compliant Android `bootanimation.zip` file. It acts as a user-friendly wrapper around powerful multimedia tools like `ffmpeg` and `ffprobe`. The script guides the user through a series of interactive prompts to configure key parameters such as frame rate (FPS) and resolution. It then intelligently analyzes the source video to split it into an introductory sequence (which plays once) and a looping sequence. 
+
+Finally, it processes and packages the resulting image frames into the precise directory structure and uncompressed ZIP format required by the Android operating system, with an optional built-in preview to verify the result.
 
 This script handles all of that in a single command. You provide a video or GIF, and it outputs a ready-to-use `bootanimation.zip` file, built to your exact specifications.
 
@@ -22,23 +24,53 @@ Modifying your Android device's system files (such as `/system/media/bootanimati
 
 ## Key Features
 
-* **Video/GIF to PNG:** Converts common video formats (.mp4, .mov, .webm) and animated GIFs into a PNG sequence.
-* **Android Structure:** Automatically creates the required `part0` (intro) and `part1` (loop) directory structure.
-* **Smart Resizing:** Scales and pads your input media to fit the target resolution (e.g., 1080x2400) without stretching or distorting it.
-* **`desc.txt` Generation:** Automatically creates the `desc.txt` file that tells Android the resolution, frame rate, and play order.
-* **Correct Packaging:** Generates the final `bootanimation.zip` using "Store" (level 0) compression, which is required by Android.
-* **Customizable:** All settings (resolution, FPS, durations) are easily configurable within the script.
+* **Interactive Configuration:** Instead of requiring users to edit variables within the script, it interactively prompts for all necessary parameters (FPS, resolution, and source file path), making it accessible even to users unfamiliar with shell scripting.
 
-## Architecture
+* **Dynamic Duration Splitting:** A standout feature is its ability to dynamically calculate the split point between the intro and the loop. It uses `ffprobe` to get the total video duration and `bc` for floating-point math, ensuring the loop part uses the remainder of the video after a fixed-length intro. This is far more flexible than hardcoding split times.
 
-This tool is a lightweight Bash script that acts as a wrapper for two powerful, pre-existing Linux utilities:
+* **Advanced `ffmpeg` Filtering:** The script constructs a sophisticated `ffmpeg` filter chain (`-vf`). This chain not only resizes the video but also intelligently handles aspect ratios by padding with black bars (`pad`) to prevent stretching, ensuring the final animation looks professional on the target device.
 
-1.  **FFmpeg:** This is the core engine that handles all video processing. It is used for:
-    * Reading the input file (video or GIF).
-    * Splitting the animation into intro and loop segments.
-    * Applying video filters to resize, pad, and set the frame rate.
-    * Exporting the final frames as a PNG sequence.
-2.  **`zip`:** This utility is used to package the final directories and `desc.txt` file into the `bootanimation.zip` archive. The crucial `-0` flag is used to ensure no compression is applied.
+* **Correct Packaging (`zip -0`):** It correctly creates the `bootanimation.zip` file using the essential `-0` flag, which ensures the files are stored without compression. This is a critical requirement, as the Android boot loader cannot handle compressed boot animation files.
+
+* **Integrated Full-Screen Preview:** The inclusion of an `ffplay`-based preview is an excellent feature. It allows the user to immediately see how the intro and loop will play on a screen, providing instant feedback and saving the time of testing on an actual device..
+
+* **Dependency and Error Handling:** The script performs checks for necessary dependencies like `zip` and `ffplay` before attempting to use them. It also validates user input (e.g., ensuring resolution is a number) and checks for the existence of the source file, preventing crashes and providing clear error messages.
+
+* **Clean Workspace Management:** By deleting (`rm -rf`) and recreating the project directory at the start, the script guarantees that each run is clean and free from artifacts of previous executions.
+
+## Key Design Principles
+
+**The script is built on three core principles:**
+
+* **User-Centric Interaction:** It's designed as an interactive wizard. Instead of forcing the user to edit script variables, it uses `read` and `select` prompts to guide them, making it highly accessible.
+
+* **Modularity:** Logic is cleanly separated into distinct functions (e.g., `select_fps`, `get_resolution`), making the code easy to read, maintain, and debug.
+
+* **Robustness & Safety:** It includes essential checks for user input errors (e.g., non-numeric input) and missing dependencies (`zip`, `ffplay`), preventing common failures. The initial `rm -rf` ensures each run is atomic and starts from a clean state.
+
+## Structural Elements & Functional Aspects
+
+The script's architecture follows a clear, linear execution flow divided into four main phases:
+
+**1** **Initialization:** Sets up the environment by defining color variables for the UI, displaying a header, and preparing a clean, empty project directory.
+
+**2** **Configuration:** This phase is entirely interactive. It calls the modular functions to gather all necessary parameters (FPS, Resolution, Source File) from the user and store them in global variables.
+
+**3** **Processing (Core Engine):** This is the non-interactive backend. It uses `ffprobe` to analyze the source media, then executes two `ffmpeg` commands to process and split the video into `part0` (intro) and `part1` (loop) frames. It finishes by writing the `desc.txt` control file.
+
+**4** **Finalization (Conditional):** This final phase is optional and user-driven. It checks the user's choice to either:
+
+* **Package:** Create the final, uncompressed `bootanimation.zip` file.
+
+* **Preview:** Launch `ffplay` to provide an immediate visual feedback loop.
+
+## Unique & Innovative Features
+
+**Dynamic Split Calculation:** The script doesn't rely on hardcoded timers. It intelligently uses `ffprobe` to get the video's total duration and `bc` to calculate the loop's length, making it adaptable to any video.
+
+**Integrated Verification:** The built-in `ffplay` preview is a key feature that allows the user to test and verify the animation's intro and loop behavior before deploying it to a device.
+
+**Compliance-First Packaging:** It correctly enforces the mandatory `zip -0` (store-only) flag, which is a common point of failure for manual boot animation creation.
 
 ## Prerequisites
 
