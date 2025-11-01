@@ -5,15 +5,15 @@ clear
 
 # --- 1. Color Definitions ---
 # Using the ANSI escape codes you provided for seamless integration:
-BLUE='\e[1;34m'
-YELLOW='\e[1;33m'
-GREEN='\e[0;32m'
-LIGHTGREEN='\e[1;32m'
-RED='\e[1;31m'
-CYAN='\e[0;36m'
-LIGHTCYAN='\e[96m'
-WHITE='\e[1;37m'
-NC='\e[0m' # No Color (Reset)
+BLUE=$'\e[1;34m'
+YELLOW=$'\e[1;33m'
+GREEN=$'\e[0;32m'
+LIGHTGREEN=$'\e[1;32m'
+RED=$'\e[1;31m'
+CYAN=$'\e[0;36m'
+LIGHTCYAN=$'\e[96m'
+WHITE=$'\e[1;37m'
+NC=$'\e[0m' # No Color (Reset)
 
 # --- 2. Summary ---
 echo
@@ -35,7 +35,7 @@ select_fps() {
     echo -e "\n${BLUE}Please select a frame rate (FPS):${NC}"
     options=("15" "25" "30")
     # Set the prompt for the 'select' menu
-    PS3=$'\n'"${YELLOW}Choice: ${NC}"
+    echo -e "\n${YELLOW}Choice: ${NC}"
     
     select opt in "${options[@]}"; do
         if [[ " ${options[@]} " =~ " ${opt} " ]]; then
