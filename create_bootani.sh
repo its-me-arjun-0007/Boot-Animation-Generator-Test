@@ -17,12 +17,13 @@ NC=$'\e[0m' # No Color (Reset)
 
 # --- 2. Summary ---
 echo
+echo -e "              ${WHITE}CREATED BY ARJUN${NC}"
+echo -e "              ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}"
+echo -e "              ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}"
+echo
 echo -e "${CYAN}Boot-Animation Generator . version 3.1${NC}"
 echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android bootanimation.zip.${NC}"
 echo
-echo -e "                  ${WHITE}CREATED BY ARJUN${NC}"
-echo -e "                ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}"
-echo -e "              ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}"
 echo
 echo -e "${YELLOW}LEGAL DISCLAIMER${NC}"
 echo -e "${WHITE}USE AT YOUR OWN RISK. This tool is for educational and personal use only.${NC}"
