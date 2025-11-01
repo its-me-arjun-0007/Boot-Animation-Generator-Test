@@ -107,10 +107,24 @@ rm -rf "$PROJECT_DIR"
 mkdir -p "$PART0_DIR"
 mkdir -p "$PART1_DIR"
 
-# 8. Define the FFmpeg Filter
-FILTER_GRAPH="fps=$FPS,scale=$WIDTH:$HEIGHT:force_original_aspect_ratio=decrease,pad=$WIDTH:$HEIGHT:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1"
+# --- 9. Generate Frames ---
 
-# 9. Generate Frames
+# First, get the total duration of the input file using ffprobe
+echo -e "${CYAN}Analyzing video duration...${NC}"
+TOTAL_DURATION=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$INPUT_FILE")
+
+# Check if the video is long enough for the intro
+if (( $(echo "$TOTAL_DURATION < $INTRO_DURATION" | bc -l) )); then
+    echo -e "❌ ${RED}Error: Input video is shorter than the intro duration ($INTRO_DURATION seconds).${NC}"
+    exit 1
+fi
+
+# Dynamically calculate the loop duration
+# It's the total duration minus the intro duration
+LOOP_DURATION=$(echo "$TOTAL_DURATION - $INTRO_DURATION" | bc)
+
+echo -e "✅ ${GREEN}Video duration is ${TOTAL_DURATION}s. Using ${LOOP_DURATION}s for the loop part.${NC}"
+
 echo -e "${CYAN}Processing Intro (part0)...${NC}"
 ffmpeg -loglevel error -i "$INPUT_FILE" \
        -ss 0 \
