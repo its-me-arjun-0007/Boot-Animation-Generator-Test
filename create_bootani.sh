@@ -18,18 +18,18 @@ NC=$'\e[0m' # No Color (Reset)
 # --- 2. Summary ---
 
 
-echo    .--------------------------------------------------------------------------------.
-echo    |  _______ _______ _______ _______ _______ _______ _______ _______ _______       |                                                                             |
-echo    |                                                                                |
-echo    |                A N D R O I D     B O O T     A N I M A T I O N                 |
-echo    |                                                                                |
-echo    |                               G E N E R A T O R                                |
-echo    |  _______ _______ _______ _______ _______ _______ _______ _______ _______       |
-echo    |                                                                                |
-echo -e |                   "${WHITE}CREATED BY IT'S ME ARJUN${NC}"                      |
-echo -e |  "${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}"                  |
-echo -e |  "${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}"    |
-echo -e |                                                                                |
+echo    '.--------------------------------------------------------------------------------.'
+echo    '|  _______ _______ _______ _______ _______ _______ _______ _______ _______       |                                                                             |'
+echo    '|                                                                                |'
+echo    '|                A N D R O I D     B O O T     A N I M A T I O N                 |'
+echo    '|                                                                                |'
+echo    '|                               G E N E R A T O R                                |'
+echo    '|  _______ _______ _______ _______ _______ _______ _______ _______ _______       |'
+echo    '|                                                                                |'
+echo -e "|                   ${WHITE}CREATED BY IT'S ME ARJUN${NC}                      |"
+echo -e "|  ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}                  |"
+echo -e "|  ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}    |"
+echo -e '|                                                                                |'
 echo    '--------------------------------------------------------------------------------'
 echo
 echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android bootanimation.zip.${NC}"
@@ -37,7 +37,6 @@ echo -e "${YELLOW}LEGAL DISCLAIMER${NC}"
 echo -e "${WHITE}USE AT YOUR OWN RISK. This tool is for educational and personal use only.${NC}"
 echo -e "${WHITE}Modifying system files can be risky. The creator is not responsible for any damage.${NC}"
 echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}"
-
 
 # --- 3. Function to select FPS ---
 select_fps() {
