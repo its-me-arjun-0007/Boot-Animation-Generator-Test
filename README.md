@@ -46,13 +46,14 @@ This script is designed for a Debian-based Linux environment (like Kali Linux, U
 
 * `ffmpeg`
 * `zip`
+* `bc`
 
 ## Installation
 
 1.  **Install Dependencies:**
-    Open your terminal and install `ffmpeg` and `zip`:
+    Open your terminal and install `ffmpeg`, `zip` and `bc`:
     ```bash
-    sudo apt update && sudo apt install ffmpeg zip bc
+    sudo apt update && sudo apt install ffmpeg zip bc -y
     ```
 
 2.  **Get the Script:**
