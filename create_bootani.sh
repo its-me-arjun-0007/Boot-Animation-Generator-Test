@@ -24,9 +24,9 @@ echo    '|                A N D R O I D     B O O T     A N I M A T I O N       
 echo    '|                                                                                |'
 echo    '|                               G E N E R A T O R                                |'
 echo    '|                                                                                |'
-echo -e "|                   ${WHITE}CREATED BY IT'S ME ARJUN${NC}                      |"
-echo -e "|  ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}                  |"
-echo -e "|  ${LIGHTCYAN}INSTAGRAM : https://www.instagram.com/its_me_arjun_2255${NC}    |"
+echo -e "|                             ${WHITE}CREATER : IT'S ME ARJUN${NC}                           |"
+echo -e "|                            ${BLUE}GITHUB : its-me-arjun-0007${NC}                         |"
+echo -e "|                           ${LIGHTCYAN}INSTAGRAM : its_me_arjun_2255${NC}                       |"
 echo    '|                                                                                |'
 echo    '--------------------------------------------------------------------------------'
 echo
