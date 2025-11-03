@@ -19,12 +19,10 @@ NC=$'\e[0m' # No Color (Reset)
 
 
 echo    '.--------------------------------------------------------------------------------.'
-echo    '|  _______ _______ _______ _______ _______ _______ _______ _______ _______       |                                                                             |'
 echo    '|                                                                                |'
 echo    '|                A N D R O I D     B O O T     A N I M A T I O N                 |'
 echo    '|                                                                                |'
 echo    '|                               G E N E R A T O R                                |'
-echo    '|  _______ _______ _______ _______ _______ _______ _______ _______ _______       |'
 echo    '|                                                                                |'
 echo -e "|                   ${WHITE}CREATED BY IT'S ME ARJUN${NC}                      |"
 echo -e "|  ${BLUE}GITHUB  : https://github.com/its-me-arjun-0007${NC}                  |"
@@ -36,7 +34,7 @@ echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android
 echo -e "${YELLOW}LEGAL DISCLAIMER${NC}"
 echo -e "${WHITE}USE AT YOUR OWN RISK. This tool is for educational and personal use only.${NC}"
 echo -e "${WHITE}Modifying system files can be risky. The creator is not responsible for any damage.${NC}"
-echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}"
+echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}""
 
 # --- 3. Function to select FPS ---
 select_fps() {
@@ -58,20 +56,35 @@ select_fps() {
 
 # --- 4. Function to get Resolution (Aspect Ratio) ---
 get_resolution() {
-    echo -e "\n${BLUE}Please enter the target resolution (this defines the aspect ratio).${NC}"
+    echo -e "\n${BLUE}Please enter the target resolution.${NC}"
+    echo -e "${CYAN}Pressing Enter will use the default 1080x2400.${NC}"
+    
     while true; do
-        read -p $'\n'"${YELLOW}Enter target WIDTH (e.g., 1080): ${NC}" WIDTH
+        # --- WIDTH ---
+        read -p $'\n'"${YELLOW}Enter target WIDTH (default: 1080): ${NC}" WIDTH
+        
+        # Set default if input is empty
+        WIDTH=${WIDTH:-1080}
+        
+        # Validate the result
         if [[ ! "$WIDTH" =~ ^[1-9][0-9]*$ ]]; then
             echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 1080).${NC}"
             continue
         fi
         
-        read -p "${YELLOW}Enter target HEIGHT (e.g., 2400): ${NC}" HEIGHT
+        # --- HEIGHT ---
+        read -p "${YELLOW}Enter target HEIGHT (default: 2400): ${NC}" HEIGHT
+        
+        # Set default if input is empty
+        HEIGHT=${HEIGHT:-2400}
+        
+        # Validate the result
         if [[ ! "$HEIGHT" =~ ^[1-9][0-9]*$ ]]; then
             echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 2400).${NC}"
             continue
         fi
         
+        # --- Confirmation ---
         echo -e "✅ ${GREEN}Resolution set to ${WIDTH}x${HEIGHT}.${NC}"
         break
     done
