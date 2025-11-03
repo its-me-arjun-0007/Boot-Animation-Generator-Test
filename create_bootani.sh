@@ -56,38 +56,75 @@ select_fps() {
 
 # --- 4. Function to get Resolution (Aspect Ratio) ---
 get_resolution() {
-    echo -e "\n${BLUE}Please enter the target resolution.${NC}"
-    echo -e "${CYAN}Pressing Enter will use the default 1080x2400.${NC}"
+
+    # --- Helper Function for Custom Input ---
+    # This is the logic from your previous script,
+    # to be called if the user selects "Custom".
+    get_custom_resolution() {
+        echo -e "\n${BLUE}Please enter the custom resolution.${NC}"
+        echo -e "${CYAN}Pressing Enter will use the default 1080x2400.${NC}"
+        
+        while true; do
+            read -p $'\n'"${YELLOW}Enter target WIDTH (default: 1080): ${NC}" custom_width
+            # Set default if input is empty
+            WIDTH=${custom_width:-1080}
+            
+            if [[ ! "$WIDTH" =~ ^[1-9][0-9]*$ ]]; then
+                echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 1080).${NC}"
+                continue
+            fi
+            
+            read -p "${YELLOW}Enter target HEIGHT (default: 2400): ${NC}" custom_height
+            # Set default if input is empty
+            HEIGHT=${custom_height:-2400}
+            
+            if [[ ! "$HEIGHT" =~ ^[1-9][0-9]*$ ]]; then
+                echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 2400).${NC}"
+                continue
+            fi
+            
+            break # Break this helper function's loop
+        done
+    }
+    # --- End of Helper Function ---
+
+
+    # --- Main Resolution Menu ---
+    echo -e "\n${BLUE}Please select the target resolution:${NC}"
+    options=(
+        "1080 x 2400 (Pixel 5/6a, Galaxy A-series)"
+        "1440 x 3200 (Galaxy S21/S22 Ultra)"
+        "1080 x 2340 (Pixel 4, Galaxy S10/S20)"
+        "1440 x 3120 (Pixel 4 XL, OnePlus 7 Pro)"
+        "1080 x 2520 (Sony Xperia series)"
+        "1080 x 1920 (Older HD - Pixel 2, Galaxy S7)"
+        "1440 x 2560 (Older QHD - Pixel 2 XL)"
+        "720 x 1600 (Budget devices)"
+        "Custom (Enter manually)"
+    )
     
-    while true; do
-        # --- WIDTH ---
-        read -p $'\n'"${YELLOW}Enter target WIDTH (default: 1080): ${NC}" WIDTH
-        
-        # Set default if input is empty
-        WIDTH=${WIDTH:-1080}
-        
-        # Validate the result
-        if [[ ! "$WIDTH" =~ ^[1-9][0-9]*$ ]]; then
-            echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 1080).${NC}"
-            continue
-        fi
-        
-        # --- HEIGHT ---
-        read -p "${YELLOW}Enter target HEIGHT (default: 2400): ${NC}" HEIGHT
-        
-        # Set default if input is empty
-        HEIGHT=${HEIGHT:-2400}
-        
-        # Validate the result
-        if [[ ! "$HEIGHT" =~ ^[1-9][0-9]*$ ]]; then
-            echo -e "❌ ${RED}Invalid input. Please enter a number (e.g., 2400).${NC}"
-            continue
-        fi
-        
-        # --- Confirmation ---
-        echo -e "✅ ${GREEN}Resolution set to ${WIDTH}x${HEIGHT}.${NC}"
-        break
+    PS3=$'\n'"${YELLOW}Choice (1-9): ${NC}"
+    
+    select opt in "${options[@]}"; do
+        case $REPLY in
+            1) WIDTH=1080; HEIGHT=2400; break ;;
+            2) WIDTH=1440; HEIGHT=3200; break ;;
+            3) WIDTH=1080; HEIGHT=2340; break ;;
+            4) WIDTH=1440; HEIGHT=3120; break ;;
+            5) WIDTH=1080; HEIGHT=2520; break ;;
+            6) WIDTH=1080; HEIGHT=1920; break ;;
+            7) WIDTH=1440; HEIGHT=2560; break ;;
+            8) WIDTH=720; HEIGHT=1600; break ;;
+            9)
+                get_custom_resolution
+                break # This breaks the 'select' loop
+                ;;
+            *) echo -e "❌ ${RED}Invalid option $REPLY. Please select 1-9.${NC}" ;;
+        esac
     done
+    
+    # Confirmation message
+    echo -e "✅ ${GREEN}Resolution set to ${WIDTH}x${HEIGHT}.${NC}"
 }
 
 # --- 5. Function to get the input file ---
