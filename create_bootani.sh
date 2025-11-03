@@ -34,7 +34,7 @@ echo -e "${WHITE}A Bash script to convert any video/GIF into a formatted Android
 echo -e "${YELLOW}LEGAL DISCLAIMER${NC}"
 echo -e "${WHITE}USE AT YOUR OWN RISK. This tool is for educational and personal use only.${NC}"
 echo -e "${WHITE}Modifying system files can be risky. The creator is not responsible for any damage.${NC}"
-echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}""
+echo -e "${WHITE}Always back up your data and original bootanimation.zip before proceeding.${NC}"
 
 # --- 3. Function to select FPS ---
 select_fps() {
