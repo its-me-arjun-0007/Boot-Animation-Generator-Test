@@ -57,16 +57,13 @@ select_fps() {
 # --- 4. Function to get Resolution (Aspect Ratio) ---
 get_resolution() {
 
-    # --- Helper Function for Custom Input ---
-    # This is the logic from your previous script,
-    # to be called if the user selects "Custom".
+    # --- Helper Function for Custom Input (No changes needed here) ---
     get_custom_resolution() {
         echo -e "\n${BLUE}Please enter the custom resolution.${NC}"
         echo -e "${CYAN}Pressing Enter will use the default 1080x2400.${NC}"
         
         while true; do
             read -p $'\n'"${YELLOW}Enter target WIDTH (default: 1080): ${NC}" custom_width
-            # Set default if input is empty
             WIDTH=${custom_width:-1080}
             
             if [[ ! "$WIDTH" =~ ^[1-9][0-9]*$ ]]; then
@@ -75,7 +72,6 @@ get_resolution() {
             fi
             
             read -p "${YELLOW}Enter target HEIGHT (default: 2400): ${NC}" custom_height
-            # Set default if input is empty
             HEIGHT=${custom_height:-2400}
             
             if [[ ! "$HEIGHT" =~ ^[1-9][0-9]*$ ]]; then
@@ -83,7 +79,7 @@ get_resolution() {
                 continue
             fi
             
-            break # Break this helper function's loop
+            break
         done
     }
     # --- End of Helper Function ---
@@ -103,9 +99,18 @@ get_resolution() {
         "Custom (Enter manually)"
     )
     
-    PS3=$'\n'"${YELLOW}Choice (1-9): ${NC}"
+    # Updated prompt to inform the user about the default option
+    PS3=$'\n'"${YELLOW}Choice (Press Enter for default: 1): ${NC}"
     
     select opt in "${options[@]}"; do
+        # NEW: Check for empty input. If user just presses Enter, $REPLY is empty.
+        if [[ -z "$REPLY" ]]; then
+            echo -e "No selection made. Using default option 1."
+            WIDTH=1080
+            HEIGHT=2400
+            break
+        fi
+
         case $REPLY in
             1) WIDTH=1080; HEIGHT=2400; break ;;
             2) WIDTH=1440; HEIGHT=3200; break ;;
@@ -117,13 +122,13 @@ get_resolution() {
             8) WIDTH=720; HEIGHT=1600; break ;;
             9)
                 get_custom_resolution
-                break # This breaks the 'select' loop
+                break
                 ;;
-            *) echo -e "❌ ${RED}Invalid option $REPLY. Please select 1-9.${NC}" ;;
+            *) echo -e "❌ ${RED}Invalid option $REPLY. Please select 1-9 or press Enter.${NC}" ;;
         esac
     done
     
-    # Confirmation message
+    # This confirmation message now runs for both default and manual selections
     echo -e "✅ ${GREEN}Resolution set to ${WIDTH}x${HEIGHT}.${NC}"
 }
 
